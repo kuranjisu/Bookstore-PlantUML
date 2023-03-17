@@ -1,0 +1,33 @@
+@startuml
+title Bookstore
+actor User
+participant UI
+participant Catalog
+participant Cart
+participant Payment
+participant Gateway
+
+=== Login & Browse the store ===
+User -> UI : GET /login/user:id // Authentication Request
+UI -> User : 200 OK // Authentication Response
+UI  -> Catalog : GET /books // Get the entire list of books
+Catalog -> UI : 200 OK // Return the list of books
+User -> Catalog : GET /book/:id // Get book based onCLick()
+Catalog -> User : 200 OK // Response from GET
+Cart -> Catalog : GET /book:id
+Catalog -> Cart : 200 OK // Response from GET
+
+=== Add to Cart ===
+UI -> Cart : POST /cart:id/book // Create Cart ID
+Cart -> Catalog : GET /book:id
+Catalog -> Cart : 200 OK
+Cart -> UI : 201 CREATED
+
+=== Payment ===
+Catalog -> Cart : GET /payment
+Payment -> Gateway : POST /payment
+Gateway -> Payment : 200 OK
+Payment -> Gateway : PUT /payment:id
+Gateway -> Payment : 204 NO CONTENT
+
+@enduml
